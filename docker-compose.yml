@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+
+  php84:
+    build:
+      context: ./php/8.4
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - "8080:80"
+    networks:
+      - devnet
+
+  mariadb:
+    image: mariadb:10.3.39
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: devdb
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: devpass
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - devnet
+
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mariadb
+    ports:
+      - "8081:80"
+    networks:
+      - devnet
+
+volumes:
+  dbdata:
+
+networks:
+  devnet:
